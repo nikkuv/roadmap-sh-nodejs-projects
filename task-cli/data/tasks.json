@@ -1,0 +1,32 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Task 1",
+      "status": "todo",
+      "createdAt": "2025-01-01",
+      "updatedAt": "2025-01-01"
+    },
+    {
+      "id": 2,
+      "title": "Task 2",
+      "status": "done",
+      "createdAt": "2025-01-01",
+      "updatedAt": "2025-09-29T09:38:00.615Z"
+    },
+    {
+      "id": 3,
+      "title": "Task 3",
+      "status": "done",
+      "createdAt": "2025-01-01",
+      "updatedAt": "2025-01-01"
+    },
+    {
+      "id": 4,
+      "title": "Do a scaler problem",
+      "status": "todo",
+      "createdAt": "2025-09-29T09:29:41.613Z",
+      "updatedAt": "2025-09-29T09:29:41.613Z"
+    }
+  ]
+}
