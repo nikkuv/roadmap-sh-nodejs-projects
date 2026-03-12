@@ -1,26 +1,49 @@
-import { useState } from 'react'
+import { useState, type FormEvent, type ChangeEvent } from 'react'
 import './App.css'
+
+const apiBase = import.meta.env.VITE_API_URL ?? ''
 
 function App() {
   const [url, setUrl] = useState('')
   const [shortenedUrl, setShortenedUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setError(null)
+    setShortenedUrl('')
     setIsLoading(true)
-    setShortenedUrl('something');
-    // Simulate API call
-    // setTimeout(() => {
-    //   setShortenedUrl()
-    //   setIsLoading(false)
-    // }, 1000)
 
-    
+    try {
+      const res = await fetch(`${apiBase}/api/shorten`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      })
+      const data = (await res.json()) as { shortUrl?: string; error?: string }
+
+      if (!res.ok) {
+        setError(data.error ?? 'Failed to shorten URL')
+        return
+      }
+      setShortenedUrl(data.shortUrl ?? '')
+    } catch {
+      setError('Network error. Is the backend running?')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(shortenedUrl)
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(shortenedUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setError('Failed to copy to clipboard')
+    }
   }
 
   return (
@@ -30,7 +53,7 @@ function App() {
         <input
           type="url"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
           placeholder="Enter your long URL here"
           required
           className="input"
@@ -39,6 +62,12 @@ function App() {
           {isLoading ? 'Shortening...' : 'Shorten URL'}
         </button>
       </form>
+
+      {error && (
+        <div className="error" role="alert">
+          {error}
+        </div>
+      )}
 
       {shortenedUrl && (
         <div className="result">
@@ -50,8 +79,12 @@ function App() {
               readOnly
               className="shortened-url"
             />
-            <button onClick={copyToClipboard} className="copy-button">
-              Copy
+            <button
+              type="button"
+              onClick={copyToClipboard}
+              className="copy-button"
+            >
+              {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
         </div>

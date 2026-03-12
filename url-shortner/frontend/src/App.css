@@ -5,6 +5,15 @@
   text-align: center;
 }
 
+.error {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  color: #c62828;
+  background-color: #ffebee;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
 .form {
   display: flex;
   flex-direction: column;
